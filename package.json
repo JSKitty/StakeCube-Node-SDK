@@ -1,6 +1,6 @@
 {
   "name": "stakecube-node-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The official StakeCube.net API SDK for Node.js",
   "main": "index.js",
   "scripts": {
