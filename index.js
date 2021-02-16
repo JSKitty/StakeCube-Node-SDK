@@ -22,6 +22,7 @@ function isLoggedIn() {
 function login(key, secret) {
     API_KEY = key;
     SECRET  = secret;
+    return true;
 }
 
 /* --- PUBLIC APIs --- */
