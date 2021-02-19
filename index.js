@@ -108,7 +108,7 @@ async function getOrderbook(market, side) {
     }
     try {
         let res = await superagent
-        .get(ENDPOINT_BASE + 'exchange/spot/orderbook?market=' + market + '&side=' + side)
+        .get(ENDPOINT_BASE + '/exchange/spot/orderbook?market=' + market + '&side=' + side)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send();
         return res.body;
@@ -128,7 +128,7 @@ async function getAccount() {
 
         // Send the request
         let res = await superagent
-        .get(ENDPOINT_BASE + 'user/account?' + input + "&signature=" + hmac)
+        .get(ENDPOINT_BASE + '/user/account?' + input + "&signature=" + hmac)
         .set('X-API-KEY', API_KEY)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send();
@@ -147,7 +147,7 @@ async function getOpenOrders() {
     
         // Send the request
         let res = await superagent
-        .get(ENDPOINT_BASE + 'exchange/spot/myOpenOrder' + input + "&signature=" + hmac)
+        .get(ENDPOINT_BASE + '/exchange/spot/myOpenOrder?' + input + "&signature=" + hmac)
         .set('X-API-KEY', API_KEY)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send();
@@ -168,7 +168,7 @@ async function myTrades(market, limit = 100) {
 
         // Send the request
         let res = await superagent
-        .get(ENDPOINT_BASE + 'exchange/spot/myTrades?' + input + "&signature=" + hmac)
+        .get(ENDPOINT_BASE + '/exchange/spot/myTrades?' + input + "&signature=" + hmac)
         .set('X-API-KEY', API_KEY)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send();
@@ -187,7 +187,7 @@ async function getOrderHistory(market, limit = 100) {
 
         // Send the request
         let res = await superagent
-        .get(ENDPOINT_BASE + 'exchange/spot/myOrderHistory?' + input + "&signature=" + hmac)
+        .get(ENDPOINT_BASE + '/exchange/spot/myOrderHistory?' + input + "&signature=" + hmac)
         .set('X-API-KEY', API_KEY)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send();
@@ -206,7 +206,27 @@ async function postOrder(market, side, price, amount) {
 
         // Send the request
         let res = await superagent
-        .post(ENDPOINT_BASE + 'exchange/spot/order')
+        .post(ENDPOINT_BASE + '/exchange/spot/order')
+        .set('X-API-KEY', API_KEY)
+        .set('User-Agent', 'StakeCube Node.js Library')
+        .send(input + "&signature=" + hmac);
+        return res.body;
+    } catch (e) {
+        throw e;
+    }
+}
+
+async function cancel(orderID) {
+    if (!isLoggedIn()) throw "You must login to StakeCube with your API KEY and SECRET before sending private requests";
+    if (!orderID || orderID <= 1) throw "Please enter the order ID (integer)";
+    try {
+        // Format the input and craft a HMAC signature
+        const input = "orderId=" + orderID + "&nonce=" + Date.now();
+        const hmac = HMAC(input);
+
+        // Send the request
+        let res = await superagent
+        .post(ENDPOINT_BASE + '/exchange/spot/cancel')
         .set('X-API-KEY', API_KEY)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send(input + "&signature=" + hmac);
@@ -225,7 +245,7 @@ async function cancelAll(market) {
 
         // Send the request
         let res = await superagent
-        .post(ENDPOINT_BASE + 'exchange/spot/cancelAll')
+        .post(ENDPOINT_BASE + '/exchange/spot/cancelAll')
         .set('X-API-KEY', API_KEY)
         .set('User-Agent', 'StakeCube Node.js Library')
         .send(input + "&signature=" + hmac);
@@ -241,5 +261,5 @@ module.exports = {
     // Public API calls (no auth)
     getArbitrageInfo, getMarkets, getOhlcData, getRatelimits, getTrades, getOrderbook,
     // Private API calls (key + secret required via 'login' method)
-    getAccount, getOpenOrders, myTrades, getOrderHistory, postOrder, cancelAll
+    getAccount, getOpenOrders, myTrades, getOrderHistory, postOrder, cancel, cancelAll
 };
