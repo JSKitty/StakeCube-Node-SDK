@@ -138,6 +138,25 @@ async function getAccount() {
     }
 }
 
+async function withdraw(ticker, address, amount) {
+    if (!isLoggedIn()) throw "You must login to StakeCube with your API KEY and SECRET before sending private requests";
+    try {
+        // Format the input and craft a HMAC signature
+        const input = "nonce=" + Date.now() + "&ticker=" + ticker + "&address=" + address + "&amount=" + amount;
+        const hmac = HMAC(input);
+
+        // Send the request
+        let res = await superagent
+        .post(ENDPOINT_BASE + '/user/withdraw')
+        .set('X-API-KEY', API_KEY)
+        .set('User-Agent', 'StakeCube Node.js Library')
+        .send(input + "&signature=" + hmac);
+        return res.body;
+    } catch (e) {
+        throw e;
+    }
+}
+
 async function getOpenOrders() {
     if (!isLoggedIn()) throw "You must login to StakeCube with your API KEY and SECRET before sending private requests";
     try {
@@ -261,5 +280,5 @@ module.exports = {
     // Public API calls (no auth)
     getArbitrageInfo, getMarkets, getOhlcData, getRatelimits, getTrades, getOrderbook,
     // Private API calls (key + secret required via 'login' method)
-    getAccount, getOpenOrders, myTrades, getOrderHistory, postOrder, cancel, cancelAll
+    getAccount, withdraw, getOpenOrders, myTrades, getOrderHistory, postOrder, cancel, cancelAll
 };
