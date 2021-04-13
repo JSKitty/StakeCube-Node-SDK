@@ -29,7 +29,7 @@ Then you're ready to roll!
 
 ## Usage
 
-### Note: If you're looking for Advanced REST API documentation, please use [this document](https://github.com/stakecube/DevCube/blob/master/REST-API.md) from DevCube!
+### Note: If you're looking for Advanced REST API documentation, please use [this document](https://github.com/stakecube/DevCube/tree/master/rest-api) from DevCube!
 
 ### Login
 > Authenticates with your StakeCube account via API Key + Secret, this will allow you to use Private APIs.
